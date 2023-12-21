@@ -268,8 +268,9 @@ class UNetTrainer:
                 output, loss = self._forward_pass(input, target, weight)
                 val_losses.update(loss.item(), self._batch_size(input))
 
-                if i % 100 == 0:
-                    self._log_images(input, target, output, 'val_')
+                # Debugging: print shapes of outputs and targets
+                print(f"Output shape: {output.shape}")
+                print(f"Target shape: {target.shape}")
 
                 eval_score = self.eval_criterion(output, target)
                 val_scores.update(eval_score.item(), self._batch_size(input))
@@ -281,6 +282,7 @@ class UNetTrainer:
             self._log_stats('val', val_losses.avg, val_scores.avg)
             logger.info(f'Validation finished. Loss: {val_losses.avg}. Evaluation score: {val_scores.avg}')
             return val_scores.avg
+
 
     def _split_training_batch(self, t):
         def _move_to_gpu(input):

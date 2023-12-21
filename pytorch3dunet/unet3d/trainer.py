@@ -174,8 +174,15 @@ class UNetTrainer:
                         f'Epoch [{self.num_epochs}/{self.max_num_epochs - 1}]')
 
             input, target, weight = self._split_training_batch(t)
+            
+            # Debug: Print input and target shapes
+            logger.info(f"Input shape: {input.shape}")
+            logger.info(f"Target shape: {target.shape}")
 
             output, loss = self._forward_pass(input, target, weight)
+            
+            # Debug: Print output shape
+            logger.info(f"Output shape: {output.shape}")
 
             train_losses.update(loss.item(), self._batch_size(input))
 
@@ -254,7 +261,7 @@ class UNetTrainer:
         return False
 
     def validate(self):
-        logger.info('Validating...')
+        logger.info('Validating1...')
 
         val_losses = utils.RunningAverage()
         val_scores = utils.RunningAverage()
@@ -262,15 +269,16 @@ class UNetTrainer:
         with torch.no_grad():
             for i, t in enumerate(self.loaders['val']):
                 logger.info(f'Validation iteration {i}')
-
                 input, target, weight = self._split_training_batch(t)
+
+                # Debugging: log shapes of input, output, and target
+                logger.info(f"Input shape (before model): {input.shape}")
+                output, loss = self._forward_pass(input, target, weight)
+                logger.info(f"Output shape (after model): {output.shape}")
+                logger.info(f"Target shape: {target.shape}")
 
                 output, loss = self._forward_pass(input, target, weight)
                 val_losses.update(loss.item(), self._batch_size(input))
-
-                # Debugging: print shapes of outputs and targets
-                print(f"Output shape: {output.shape}")
-                print(f"Target shape: {target.shape}")
 
                 eval_score = self.eval_criterion(output, target)
                 val_scores.update(eval_score.item(), self._batch_size(input))
@@ -282,6 +290,7 @@ class UNetTrainer:
             self._log_stats('val', val_losses.avg, val_scores.avg)
             logger.info(f'Validation finished. Loss: {val_losses.avg}. Evaluation score: {val_scores.avg}')
             return val_scores.avg
+
 
 
     def _split_training_batch(self, t):

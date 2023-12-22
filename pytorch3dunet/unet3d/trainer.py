@@ -176,13 +176,13 @@ class UNetTrainer:
             input, target, weight = self._split_training_batch(t)
             
             # Debug: Print input and target shapes
-            logger.info(f"Input shape: {input.shape}")
-            logger.info(f"Target shape: {target.shape}")
+            # logger.info(f"Input shape: {input.shape}")
+            # logger.info(f"Target shape: {target.shape}")
 
             output, loss = self._forward_pass(input, target, weight)
             
             # Debug: Print output shape
-            logger.info(f"Output shape: {output.shape}")
+            # logger.info(f"Output shape: {output.shape}")
 
             train_losses.update(loss.item(), self._batch_size(input))
 
@@ -272,10 +272,10 @@ class UNetTrainer:
                 input, target, weight = self._split_training_batch(t)
 
                 # Debugging: log shapes of input, output, and target
-                logger.info(f"Input shape (before model): {input.shape}")
+                # logger.info(f"Input shape (before model): {input.shape}")
                 output, loss = self._forward_pass(input, target, weight)
-                logger.info(f"Output shape (after model): {output.shape}")
-                logger.info(f"Target shape: {target.shape}")
+                # logger.info(f"Output shape (after model): {output.shape}")
+                # logger.info(f"Target shape: {target.shape}")
 
                 output, loss = self._forward_pass(input, target, weight)
                 val_losses.update(loss.item(), self._batch_size(input))
